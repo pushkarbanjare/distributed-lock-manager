@@ -22,10 +22,10 @@ public class LockController {
     }
 
     @PostMapping("/acquire")
-    public Map<String, Object> acquire(@RequestParam String key, @RequestParam(defaultValue = "10") long ttl) {
+    public Map<String, Object> acquire(@RequestParam String key, @RequestParam(defaultValue = "10") long ttl, @RequestParam(defaultValue = "false") boolean autoExtend) {
         String lockValue = UUID.randomUUID().toString();
-        boolean acquired = lockService.acquireLock(key, lockValue, ttl);
-        return Map.of("acquired", acquired, "key", key, "lockValue", lockValue);
+        boolean acquired = autoExtend ? lockService.acquireLockWithWatchdog(key, lockValue, ttl) : lockService.acquireLock(key, lockValue, ttl);
+        return Map.of("acquired", acquired, "key", key, "lockValue", lockValue, "autoExtend", autoExtend);
     }
 
     @PostMapping("/release")
