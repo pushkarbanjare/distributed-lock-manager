@@ -29,8 +29,8 @@ public class LockController {
     }
 
     @PostMapping("/release")
-    public Map<String, Object> release(@RequestParam String key) {
-        lockService.releaseLock(key);
-        return Map.of("released", true, "key", key);
+    public Map<String, Object> release(@RequestParam String key, @RequestParam String lockValue) {
+        boolean released = lockService.releaseLock(key, lockValue);
+        return Map.of("released", released, "key", key);
     }
 }
